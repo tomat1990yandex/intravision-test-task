@@ -55,8 +55,6 @@ export const api = createApi({
         getUsers: builder.query<any, string>({
             query: (tenantGuid) => `api/Users/${tenantGuid}`,
         }),
-
-        // Новые функции из tasksApi.ts
         addTask: builder.mutation<any, { tenantGuid: string; dto: any }>({
             query: ({tenantGuid, dto}) => ({
                 url: `api/Tasks/${tenantGuid}`,
@@ -67,7 +65,6 @@ export const api = createApi({
     }),
 });
 
-// Экспорт запросов API
 export const {
     useGetPrioritiesQuery,
     useGetServicesQuery,
