@@ -1,15 +1,13 @@
 import React from 'react';
 import './App.css';
-import {Provider} from "react-redux";
-import {store} from "../../store/store";
-import Header from "../Header/Header";
-import SearchBar from "../SearchBar/SearchBar";
+import {Provider} from 'react-redux';
+import {store} from '../../store/store';
+import AppRouter from "../Router/Router";
 
 const App: React.FC = () => (
     <Provider store={store}>
         <div className="App">
-            <Header/>
-            <SearchBar/>
+            <AppRouter/>
         </div>
     </Provider>
 );

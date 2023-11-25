@@ -1,10 +1,11 @@
-// api.ts
-
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+
+const baseUrl = 'http://intravision-task.test01.intravision.ru/';
+export const tenantGuid = 'd0c8889a-3004-47b4-9a5e-4dae6d985132';
 
 export const api = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://intravision-task.test01.intravision.ru/api'}),
+    baseQuery: fetchBaseQuery({baseUrl}),
     endpoints: (builder) => ({
         getPriorities: builder.query<any, string>({
             query: (tenantGuid) => `/Priorities/${tenantGuid}`,
@@ -23,14 +24,14 @@ export const api = createApi({
         }),
         updateTask: builder.mutation<any, { tenantGuid: string; dto: any }>({
             query: ({tenantGuid, dto}) => ({
-                url: `/Tasks/${tenantGuid}`,
+                url: `api/Tasks/${tenantGuid}`,
                 method: 'PUT',
                 body: dto,
             }),
         }),
         createTask: builder.mutation<any, { tenantGuid: string; dto: any }>({
             query: ({tenantGuid, dto}) => ({
-                url: `/Tasks/${tenantGuid}`,
+                url: `api/Tasks/${tenantGuid}`,
                 method: 'POST',
                 body: dto,
             }),
@@ -43,20 +44,30 @@ export const api = createApi({
             }),
         }),
         getTaskTypes: builder.query<any, string>({
-            query: (tenantGuid) => `/TaskTypes/${tenantGuid}`,
+            query: (tenantGuid) => `api/TaskTypes/${tenantGuid}`,
         }),
         getTenants: builder.query<any, void>({
-            query: () => `/Tenants`,
+            query: () => `api/Tenants`,
         }),
         getUserGroups: builder.query<any, string>({
-            query: (tenantGuid) => `/UserGroups/${tenantGuid}`,
+            query: (tenantGuid) => `api/UserGroups/${tenantGuid}`,
         }),
         getUsers: builder.query<any, string>({
-            query: (tenantGuid) => `/Users/${tenantGuid}`,
+            query: (tenantGuid) => `api/Users/${tenantGuid}`,
         }),
+
+        // Новые функции из tasksApi.ts
+        addTask: builder.mutation<any, { tenantGuid: string; dto: any }>({
+            query: ({tenantGuid, dto}) => ({
+                url: `api/Tasks/${tenantGuid}`,
+                method: 'POST',
+                body: dto,
+            }),
+        })
     }),
 });
 
+// Экспорт запросов API
 export const {
     useGetPrioritiesQuery,
     useGetServicesQuery,
@@ -70,4 +81,5 @@ export const {
     useGetTenantsQuery,
     useGetUserGroupsQuery,
     useGetUsersQuery,
+    useAddTaskMutation,  // Экспортируем новую функцию
 } = api;

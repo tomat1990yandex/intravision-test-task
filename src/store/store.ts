@@ -1,14 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { api } from '../services/api';
 import tasksReducer from './tasksSlice';
-
-// Определение типа данных RootState
-export type RootState = ReturnType<typeof store.getState>;
 
 export const store = configureStore({
     reducer: {
         tasks: tasksReducer,
-        // Другие редукторы, если есть
+        [api.reducerPath]: api.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(api.middleware),
 });
 
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

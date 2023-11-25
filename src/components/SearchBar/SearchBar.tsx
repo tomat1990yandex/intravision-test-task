@@ -1,6 +1,6 @@
 import React from 'react';
-import './SearchBar.css'
-import searchIcon from "../../images/searchIcon.png"
+import './SearchBar.css';
+import searchIcon from '../../images/searchIcon.png';
 
 const SearchBar: React.FC = () => {
     return (
