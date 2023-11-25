@@ -1,0 +1,7 @@
+.App {
+  display: flex;
+  text-align: center;
+  max-height: 850px;
+  max-width: 1600px;
+}
+

@@ -1,0 +1,26 @@
+.header {
+    background-color: #002137;
+    display: flex;
+    flex-direction: column;
+    width: 96px;
+    height: 850px;
+    align-items: center;
+}
+
+.menu_container {
+    padding: 15px 0;
+}
+
+.menu_logo {
+    padding: 15px;
+}
+
+.menu_icons {
+
+}
+
+.menu_labels {
+    color: #FFF;
+    font-family: "Roboto Light", serif;
+    font-size: 12px;
+}

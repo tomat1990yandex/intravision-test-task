@@ -1,0 +1,30 @@
+.searchBar {
+    display: flex;
+    width: 100%;
+    background-color: #d1e0ed;
+    height: 65px;
+}
+
+.search_field {
+    position: relative;
+    align-items: start;
+    margin-left: 20px;
+    width: 680px;
+    height: 40px;
+    border-radius: 20px;
+    border: 1px solid #42aaff;
+}
+
+.search_icon {
+    position: absolute;
+    width: 19px;
+    height: 19px;
+    margin-right: 13px;
+}
+
+.search_container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
