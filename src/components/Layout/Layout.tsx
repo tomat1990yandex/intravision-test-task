@@ -1,16 +1,16 @@
-import {Outlet} from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import React from 'react';
 import Header from "../Header/Header";
 import SearchBar from "../SearchBar/SearchBar";
 
-function Layout() {
-    return (
-        <>
-            <Header />
-            <SearchBar />
-            <Outlet />
-        </>
-    );
-}
+const Layout: React.FC = () => (
+  <>
+    <Header/>
+    <div className="main_container">
+      <SearchBar/>
+      <Outlet/>
+    </div>
+  </>
+);
 
 export { Layout };

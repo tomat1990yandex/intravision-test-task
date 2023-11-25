@@ -8,11 +8,14 @@
 .search_field {
     position: relative;
     align-items: start;
-    margin-left: 20px;
     width: 680px;
     height: 40px;
     border-radius: 20px;
     border: 1px solid #42aaff;
+    outline: none;
+    padding: 10px 35px;
+    margin-left: 17px;
+    margin-top: 5px;
 }
 
 .search_icon {
@@ -20,6 +23,7 @@
     width: 19px;
     height: 19px;
     margin-right: 13px;
+    margin-top: 5px;
 }
 
 .search_container {
