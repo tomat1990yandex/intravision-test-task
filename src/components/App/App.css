@@ -1,11 +1,11 @@
 .App {
-  display: flex;
-  text-align: center;
-  max-height: 850px;
-  max-width: 1600px;
+    display: flex;
+    text-align: center;
+    max-height: 850px;
+    max-width: 1600px;
 }
 
 .main_container {
-
+    width: 100%;
 }
 

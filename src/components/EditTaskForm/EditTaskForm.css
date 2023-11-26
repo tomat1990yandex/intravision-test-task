@@ -1,0 +1,66 @@
+.editTaskModalContent {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    border: 1px solid #d7dce0;
+    background-color: #ecf3f7;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+.task_form_edit {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.formTextarea {
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #e8e8e8;
+    resize: none;
+    line-height: 1em;
+}
+
+.formLabel {
+    font-family: Ubuntu, sans-serif;
+    font-size: 14px;
+    color: #9f9ea7;
+}
+
+.submitButton {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submitButton:hover {
+    background-color: #45a049;
+}
+
+.task_form_right {
+    border-left: 1px solid #d7dce0;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.task_form_left {
+    display: flex;
+    padding: 30px;
+    gap: 30px;
+    flex-direction: column;
+    align-items: flex-start;
+}
