@@ -5,7 +5,9 @@ import {
   useUpdateTaskMutation
 } from '../../services/api';
 import TitleBar from '../TitleBar/TitleBar';
+import calendarIcon from '../../images/calendarIcon.png';
 import './EditTaskForm.css';
+import { getStatusColor } from '../TaskList/TaskList';
 
 interface EditTaskFormProps {
   taskId: number;
@@ -22,6 +24,9 @@ interface TaskFormData {
   priorityName: string;
   resolutionDatePlan: string;
   tags: { id: number; name: string }[];
+  lifetimeItems: { createdAt: string; userName: string; comment: string; id: string }[];
+  statusId: string;
+  executorId: string;
 }
 
 const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, onClose }) => {
@@ -34,7 +39,10 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, onClose }) => {
     executorName: '',
     priorityName: '',
     resolutionDatePlan: '',
-    tags: []
+    tags: [],
+    lifetimeItems: [],
+    statusId: '',
+    executorId: '',
   });
 
   const { data: taskData } = useGetTasksByIdQuery({ tenantGuid, id: taskId });
@@ -51,19 +59,21 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, onClose }) => {
         executorName: taskData.executorName,
         priorityName: taskData.priorityName,
         resolutionDatePlan: taskData.resolutionDatePlan,
-        tags: taskData.tags
+        tags: taskData.tags,
+        lifetimeItems: taskData.lifetimeItems,
+        statusId: taskData.statusId,
+        executorId: taskData.executorId,
       });
     }
-  }, [taskData]);
+  }, [taskData, taskId]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setTaskFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
+  const formatDateString = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Месяцы начинаются с 0
+    const year = date.getFullYear().toString();
+
+    return `${day}.${month}.${year} г.`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,8 +84,8 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, onClose }) => {
         tenantGuid,
         dto: {
           id: taskId,
-          ...taskFormData
-        }
+          ...taskFormData,
+        },
       });
 
       if ('error' in response) {
@@ -96,43 +106,55 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ taskId, onClose }) => {
         description={taskFormData.name}
         onClose={onClose}
       />
-      <form onSubmit={handleSubmit} className="task_form_edit">
-        <section className="task_form_left">
-          <div className="formContainer">
-            <label className="formLabel">Описание</label>
+      <form onSubmit={handleSubmit} className="editTaskForm">
+        <section className="editTaskForm__left">
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Описание</label>
             <p>{taskFormData.description}</p>
           </div>
-          <button type="submit" className="submitButton" disabled={isLoading}>
+          <button type="submit" className="editTaskForm__submitButton" disabled={isLoading}>
             {isLoading ? 'Сохранение...' : 'Сохранить'}
           </button>
-          <div className="formContainer">
-            <label className="formLabel">Статус</label>
-            <p>{taskFormData.statusName}</p>
-          </div>
+          {taskFormData.lifetimeItems?.map((obj) => (
+            <div key={obj.id} className="editTaskForm__container">
+              <div className="editTaskForm__statusCircle editTaskForm__statusCircle-large" style={{ backgroundColor: '#f5f5f5', width: 20 }} />
+              <div>
+                <h3 className="editTaskForm__commentTitle">{obj.userName}</h3>
+                <h4>{obj.createdAt}</h4>
+                <p>{obj.comment}</p>
+              </div>
+            </div>
+          ))}
         </section>
-        <section className="task_form_right">
-          <div className="formContainer">
-            <label className="formLabel">Статус</label>
-            <p>{taskFormData.statusName}</p>
+        <section className="editTaskForm__right">
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Статус</label>
+            <div className="editTaskForm__statusContainer">
+              <div className="editTaskForm__statusCircle" style={{ backgroundColor: getStatusColor(taskFormData.statusName) }} />
+              <p>{taskFormData.statusName}</p>
+            </div>
           </div>
-          <div className="formContainer">
-            <label className="formLabel">Заявитель</label>
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Заявитель</label>
             <p>{taskFormData.initiatorName}</p>
           </div>
-          <div className="formContainer">
-            <label className="formLabel">Создана</label>
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Создана</label>
             <p>{taskFormData.executorName}</p>
           </div>
-          <div className="formContainer">
-            <label className="formLabel">Приоритет</label>
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Приоритет</label>
             <p>{taskFormData.priorityName}</p>
           </div>
-          <div className="formContainer">
-            <label className="formLabel">Срок</label>
-            <p>{taskFormData.resolutionDatePlan}</p>
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Срок</label>
+            <div className="editTaskForm__statusContainer">
+              <img src={calendarIcon} alt="calendarIcon" />
+              <p>{formatDateString(taskFormData.resolutionDatePlan)}</p>
+            </div>
           </div>
-          <div className="formContainer">
-            <label className="formLabel">Теги</label>
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Теги</label>
             {taskFormData.tags.map((tag: { id: number; name: string }) => (
               <p key={tag.id}>{tag.name}</p>
             ))}

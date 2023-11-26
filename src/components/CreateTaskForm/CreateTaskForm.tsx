@@ -5,9 +5,10 @@ import TitleBar from "../TitleBar/TitleBar";
 
 interface CreateTaskFormProps {
   onClose: () => void;
+  handleCreateTask: (taskId: number) => void;
 }
 
-const CreateTaskForm: React.FC<CreateTaskFormProps> = ({onClose}) => {
+const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClose}) => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [createTask, {isLoading}] = useCreateTaskMutation();
@@ -18,8 +19,12 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({onClose}) => {
     try {
       const response = await createTask({
         tenantGuid,
-        dto: {name: taskName, description: taskDescription},
+        dto: { name: taskName, description: taskDescription },
       });
+
+      if ('data' in response) {
+        handleCreateTask(response.data);
+      }
 
       if ('error' in response) {
         const errorData = response.error as { status: number; data: unknown };
@@ -31,6 +36,8 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({onClose}) => {
       console.error('Error creating task:', error);
     }
   };
+
+
 
   return (
     <div className="createTaskModalContent">

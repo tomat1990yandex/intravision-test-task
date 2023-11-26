@@ -1,10 +1,6 @@
 import React, {useState} from 'react';
 import './TaskList.css';
-import {
-  tenantGuid,
-  useCreateTaskMutation,
-  useGetTasksQuery,
-} from '../../services/api';
+import {tenantGuid, useGetTasksQuery,} from '../../services/api';
 import CreateTaskForm from '../CreateTaskForm/CreateTaskForm';
 import EditTaskForm from '../EditTaskForm/EditTaskForm';
 
@@ -16,7 +12,7 @@ export interface ITask {
   priorityName: string;
 }
 
-const getStatusColor = (status: string): string => {
+export const getStatusColor = (status: string): string => {
   switch (status.toLowerCase()) {
     case 'открыта':
       return 'red';
@@ -52,25 +48,16 @@ const getPriorityColor = (priority: string): string => {
 
 const TaskList: React.FC = () => {
   const {data, error, isLoading, refetch} = useGetTasksQuery({tenantGuid});
-  const [createTask] = useCreateTaskMutation();
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
-  const [isCreateTaskFormOpen, toggleCreateTaskForm] = useState(false);
+  const [isCreateTaskForm, toggleCreateTaskForm] = useState(false);
 
-  const [newTaskName, setNewTaskName] = useState('');
-
-  const handleCreateTask = async () => {
-    try {
-      await createTask({tenantGuid, dto: {name: newTaskName}});
-      refetch();
-      toggleCreateTaskForm(false);
-      setNewTaskName('');
-    } catch (error) {
-      console.error('Error creating task:', error);
-    }
-  };
+  const handleCreateTask = (taskId: number) => {
+    refetch();
+    toggleCreateTaskForm(false);
+    setSelectedTask({ id: taskId, name: 'New Task', statusName: 'Open', executorName: '', priorityName: '' });
+  }
 
   const handleEditTask = (task: ITask) => {
-    console.log(task);
     setSelectedTask(task);
   };
 
@@ -134,11 +121,11 @@ const TaskList: React.FC = () => {
         ))}
         </tbody>
       </table>
-      {isCreateTaskFormOpen && (
+      {isCreateTaskForm && (
         <CreateTaskForm
+          handleCreateTask={handleCreateTask}
           onClose={() => {
             toggleCreateTaskForm(false);
-            setNewTaskName('');
           }}
         />
       )}

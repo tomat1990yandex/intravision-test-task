@@ -8,34 +8,34 @@
     animation: slideIn 0.5s ease-in-out;
 }
 
-.task_form_edit {
+.editTaskForm {
     display: flex;
     justify-content: space-between;
     height: 100%;
 }
 
-.formContainer {
+.editTaskForm__container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-.formTextarea {
-    width: 100%;
-    outline: none;
-    border-radius: 5px;
-    border: 1px solid #e8e8e8;
-    resize: none;
-    line-height: 1em;
+.editTaskForm__left,
+.editTaskForm__right {
+    display: flex;
+    padding: 30px;
+    gap: 30px;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.formLabel {
+.editTaskForm__label {
     font-family: Ubuntu, sans-serif;
     font-size: 14px;
     color: #9f9ea7;
 }
 
-.submitButton {
+.editTaskForm__submitButton {
     background-color: #4caf50;
     color: white;
     padding: 10px;
@@ -45,11 +45,11 @@
     font-size: 16px;
 }
 
-.submitButton:hover {
+.editTaskForm__submitButton:hover {
     background-color: #45a049;
 }
 
-.task_form_right {
+.editTaskForm__right {
     border-left: 1px solid #d7dce0;
     padding: 30px;
     display: flex;
@@ -57,10 +57,27 @@
     gap: 15px;
 }
 
-.task_form_left {
+.editTaskForm__statusCircle-large {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #c5cdd3;
+}
+
+.editTaskForm__statusCircle {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.editTaskForm__statusContainer {
     display: flex;
-    padding: 30px;
-    gap: 30px;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    gap: 5px;
+}
+
+.editTaskForm__commentTitle {
+    font-family: Ubuntu, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
 }

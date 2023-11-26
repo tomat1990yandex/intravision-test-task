@@ -1,23 +1,23 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 const baseUrl = 'http://intravision-task.test01.intravision.ru/';
-export const tenantGuid = 'd0c8889a-3004-47b4-9a5e-4dae6d985132';
+export const tenantGuid: string = 'd0c8889a-3004-47b4-9a5e-4dae6d985132';
 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({baseUrl}),
   endpoints: (builder) => ({
     getPriorities: builder.query<any, string>({
-      query: (tenantGuid) => `/Priorities/${tenantGuid}`,
+      query: (tenantGuid) => `api/${tenantGuid}/Priorities`,
     }),
     getServices: builder.query<any, string>({
-      query: (tenantGuid) => `/Services/${tenantGuid}`,
+      query: (tenantGuid) => `api/${tenantGuid}/Services`,
     }),
     getStatuses: builder.query<any, string>({
-      query: (tenantGuid) => `/Statuses/${tenantGuid}`,
+      query: (tenantGuid) => `api/${tenantGuid}/Statuses`,
     }),
     getTags: builder.query<any, string>({
-      query: (tenantGuid) => `/Tags/${tenantGuid}`,
+      query: (tenantGuid) => `api/${tenantGuid}/Tags`,
     }),
     getTasksById: builder.query<any, { tenantGuid: string; id: number }>({
       query: ({tenantGuid, id}) => `api/${tenantGuid}/Tasks/${id}`,
@@ -44,16 +44,16 @@ export const api = createApi({
       }),
     }),
     getTaskTypes: builder.query<any, string>({
-      query: (tenantGuid) => `api/TaskTypes/${tenantGuid}`,
+      query: (tenantGuid) => `api/${tenantGuid}/TaskTypes`,
     }),
     getTenants: builder.query<any, void>({
       query: () => `api/Tenants`,
     }),
     getUserGroups: builder.query<any, string>({
-      query: (tenantGuid) => `api/UserGroups/${tenantGuid}`,
+      query: (tenantGuid) => `api/${tenantGuid}/UserGroups`,
     }),
     getUsers: builder.query<any, string>({
-      query: (tenantGuid) => `api/Users/${tenantGuid}`,
+      query: (tenantGuid) => `api/${tenantGuid}/Users`,
     })
   }),
 });
