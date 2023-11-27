@@ -45,46 +45,6 @@
     padding: 7px;
 }
 
-.taskList_priority-bar-lower {
-    border-left-color: #fef6f6;
-}
-
-.taskList_priority-bar-low {
-    border-left-color: #fbd6b9;
-}
-
-.taskList_priority-bar-middle {
-    border-left-color: #f75394;
-}
-
-.taskList_priority-bar-high {
-    border-left-color: #b32c55;
-}
-
-.taskList_priority-bar-critical {
-    border-left-color: #ee0909;
-}
-
-.taskList_status-red {
-    background-color: #fd5e53;
-}
-
-.taskList_status-green {
-    background-color: #3cb371;
-}
-
-.taskList_status-orange {
-    background-color: #ffb02e;
-}
-
-.taskList_status-lightgreen {
-    background-color: #9acd32;
-}
-
-.taskList_status-gray {
-    background-color: #808080;
-}
-
 .taskList_container {
     display: flex;
     flex-direction: column;

@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
-const baseUrl = 'http://intravision-task.test01.intravision.ru/';
+const baseUrl: string = 'http://intravision-task.test01.intravision.ru/';
 export const tenantGuid: string = 'd0c8889a-3004-47b4-9a5e-4dae6d985132';
 
 export const api = createApi({
