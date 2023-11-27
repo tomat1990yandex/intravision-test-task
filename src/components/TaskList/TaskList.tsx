@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import './TaskList.css';
-import {tenantGuid, useGetPrioritiesQuery, useGetStatusesQuery, useGetTasksQuery,} from '../../services/api';
+import {
+  tenantGuid,
+  useGetPrioritiesQuery,
+  useGetStatusesQuery,
+  useGetTasksQuery,
+  useGetUsersQuery,
+} from '../../services/api';
 import CreateTaskForm from '../CreateTaskForm/CreateTaskForm';
 import EditTaskForm from '../EditTaskForm/EditTaskForm';
 
@@ -24,6 +30,11 @@ export interface IPriority {
   rgb: string;
 }
 
+export interface IUser {
+  id: number;
+  name: string;
+}
+
 export const getStatusColor = (status: string, statuses: IStatus[]): string => {
   const statusObject = statuses.find((s) => s.name.toLowerCase() === status.toLowerCase());
   return statusObject ? statusObject.rgb : '';
@@ -36,45 +47,45 @@ export const getPriorityColor = (priority: string, priorities: IPriority[]): str
 };
 
 const TaskList: React.FC = () => {
-  const {
-    data: taskData,
-    error: taskError,
-    isLoading: taskIsLoading,
-    refetch: taskRefetch
-  } = useGetTasksQuery({tenantGuid});
+  const {data: taskData, error: taskError, isLoading: taskIsLoading} = useGetTasksQuery({tenantGuid});
   const {data: statusData, error: statusError, isLoading: statusIsLoading} = useGetStatusesQuery(tenantGuid);
   const {data: priorityData, error: priorityError, isLoading: priorityIsLoading} = useGetPrioritiesQuery(tenantGuid);
+  const {data: userData, error: userError, isLoading: userIsLoading} = useGetUsersQuery(tenantGuid);
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isCreateTaskForm, toggleCreateTaskForm] = useState(false);
 
   const handleCreateTask = (taskId: number) => {
-    taskRefetch();
     toggleCreateTaskForm(false);
-    setSelectedTask({id: taskId, name: 'New Task', statusName: 'Открыта', executorName: '', priorityName: ''});
+    // setSelectedTask({id: taskId, name: 'New Task', statusName: 'Открыта', executorName: '', priorityName: ''});
+    setSelectedTask(taskData.find((task: ITask) => task.id === taskId));
   }
 
   const handleEditTask = (task: ITask) => {
     setSelectedTask(task);
   };
 
-  if (taskIsLoading || statusIsLoading || priorityIsLoading) {
+  if (taskIsLoading || statusIsLoading || priorityIsLoading || userIsLoading) {
     return <div>Loading...</div>;
   }
 
-  if (taskError || statusError || priorityError) {
-    return <div>Error loading tasks</div>;
+  if (taskError || statusError || priorityError || userError) {
+    return <div>Error loading</div>;
   }
 
   const tasks: ITask[] | undefined = taskData?.value;
   const statuses: IStatus[] = statusData || [];
   const priorities: IPriority[] = priorityData || [];
+  const users: IUser[] = userData || [];
 
   return (
     <div className="taskList_container">
       <div className="taskList_button_container">
         <button
           className="taskList_button"
-          onClick={() => toggleCreateTaskForm(true)}
+          onClick={() => {
+            toggleCreateTaskForm(true)
+            setSelectedTask(null)
+          }}
         >
           Создать заявку
         </button>
@@ -98,8 +109,8 @@ const TaskList: React.FC = () => {
           >
             <td className="taskList_id">
               <p
-                style={{ borderLeftColor: getPriorityColor(task.priorityName, priorities) }}
-              className={`taskList_priority-bar`}
+                style={{borderLeftColor: getPriorityColor(task.priorityName, priorities)}}
+                className={`taskList_priority-bar`}
               >
                 {task.id}
               </p>
@@ -123,12 +134,16 @@ const TaskList: React.FC = () => {
         <CreateTaskForm
           handleCreateTask={handleCreateTask}
           onClose={() => {
-            toggleCreateTaskForm(false);
+            toggleCreateTaskForm(false)
           }}
         />
       )}
       {selectedTask && (
-        <EditTaskForm taskId={selectedTask.id} onClose={() => setSelectedTask(null)} statuses={statuses}/>
+        <EditTaskForm
+          taskId={selectedTask.id}
+          onClose={() => setSelectedTask(null)}
+          statuses={statuses}
+          users={users}/>
       )}
     </div>
   );

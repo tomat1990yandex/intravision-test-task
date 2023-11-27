@@ -6,6 +6,7 @@ export const tenantGuid: string = 'd0c8889a-3004-47b4-9a5e-4dae6d985132';
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({baseUrl}),
+  tagTypes: ['TaskList', 'advancedTask'],
   endpoints: (builder) => ({
     getPriorities: builder.query<any, string>({
       query: (tenantGuid) => `api/${tenantGuid}/Priorities`,
@@ -21,6 +22,7 @@ export const api = createApi({
     }),
     getTasksById: builder.query<any, { tenantGuid: string; id: number }>({
       query: ({tenantGuid, id}) => `api/${tenantGuid}/Tasks/${id}`,
+    providesTags: ['advancedTask']
     }),
     updateTask: builder.mutation<any, { tenantGuid: string; dto: any }>({
       query: ({tenantGuid, dto}) => ({
@@ -28,6 +30,7 @@ export const api = createApi({
         method: 'PUT',
         body: dto,
       }),
+      invalidatesTags: ['TaskList', 'advancedTask']
     }),
     createTask: builder.mutation<any, { tenantGuid: string; dto: any }>({
       query: ({tenantGuid, dto}) => ({
@@ -35,6 +38,7 @@ export const api = createApi({
         method: 'POST',
         body: dto,
       }),
+      invalidatesTags: ['TaskList']
     }),
     getTasks: builder.query<any, { tenantGuid?: string; $expand?: string; $top?: number; $skip?: number }>({
       query: ({tenantGuid, $expand, $top, $skip}) => ({
@@ -42,6 +46,7 @@ export const api = createApi({
         method: 'GET',
         params: {tenantGuid, $expand, $top, $skip},
       }),
+      providesTags: ['TaskList']
     }),
     getTaskTypes: builder.query<any, string>({
       query: (tenantGuid) => `api/${tenantGuid}/TaskTypes`,

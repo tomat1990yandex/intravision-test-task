@@ -7,11 +7,14 @@ import {
 import TitleBar from '../TitleBar/TitleBar';
 import calendarIcon from '../../images/calendarIcon.png';
 import './EditTaskForm.css';
-import {getStatusColor, IStatus} from '../TaskList/TaskList';
+import {getStatusColor, IStatus, IUser} from '../TaskList/TaskList';
+import Select from 'react-select';
+
 
 interface EditTaskFormProps {
   taskId: number;
   statuses: IStatus[];
+  users: IUser[];
   onClose: () => void;
 }
 
@@ -30,7 +33,7 @@ interface TaskFormData {
   executorId: string;
 }
 
-const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) => {
+const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, users}) => {
   const [taskFormData, setTaskFormData] = useState<TaskFormData>({
     name: '',
     description: '',
@@ -49,6 +52,8 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
   const {data: taskData} = useGetTasksByIdQuery({tenantGuid, id: taskId});
   const [updateTask, {isLoading}] = useUpdateTaskMutation();
   const [newComment, setNewComment] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState<IStatus | null>(null);
+  const [selectedExecutor, setSelectedExecutor] = useState<IUser | null>(null);
 
   useEffect(() => {
     if (taskData) {
@@ -56,7 +61,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
         name: taskData.name,
         description: taskData.description,
         price: taskData.price,
-        statusName: taskData.statusName,
+        statusName: taskData.name,
         initiatorName: taskData.initiatorName,
         executorName: taskData.executorName,
         priorityName: taskData.priorityName,
@@ -66,17 +71,54 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
         statusId: taskData.statusId,
         executorId: taskData.executorId,
       });
+
+      if (!selectedStatus) {
+        const defaultStatus = statuses.find((status) => status.name === taskData.statusName);
+        setSelectedStatus(defaultStatus || null);
+      }
+
+      if (!selectedExecutor) {
+        const defaultExecutor = users.find((user) => user.name === taskData.executorName);
+        setSelectedExecutor(defaultExecutor || null);
+      }
     }
-  }, [taskData, taskId]);
+  }, [taskData, taskId, statuses, selectedStatus, users, selectedExecutor]);
 
   const formatDateString = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Месяцы начинаются с 0
-    const year = date.getFullYear().toString();
-
-    return `${day}.${month}.${year} г.`;
+    try {
+      const date = new Date(dateString);
+      const options: Intl.DateTimeFormatOptions = {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+      };
+      const formatter = new Intl.DateTimeFormat('ru-RU', options);
+      return `${formatter.format(date)} г.`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid date';
+    }
   };
+  const formatDateCommentString = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      const optionDate: Intl.DateTimeFormatOptions = {
+        day: 'numeric',
+        month: 'long',
+      };
+      const optionTime: Intl.DateTimeFormatOptions = {
+        hour: 'numeric',
+        minute: 'numeric',
+      };
+      const formatter = new Intl.DateTimeFormat('ru-RU', optionDate);
+      const formatterTime = new Intl.DateTimeFormat('ru-RU', optionTime);
+      return `${formatter.format(date)}, ${formatterTime.format(date)} прокомментировал`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid date';
+    }
+  };
+
 
   const handleNewCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewComment(e.target.value);
@@ -112,19 +154,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
         dto: {
           id: taskId,
           ...taskFormData,
-          lifetimeItems: [
-            ...taskFormData.lifetimeItems,
-            {
-              createdAt: new Date().toISOString(),
-              userName: tenantGuid,
-              comment: newComment,
-              lifetimeType: 10,
-              fieldName: '',
-              oldFieldValue: '',
-              newFieldValue: '',
-              id: Math.floor(10000 + Math.random() * 90000)
-            },
-          ],
+          comment: newComment,
         },
       });
 
@@ -138,7 +168,53 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
       console.error('Error adding comment:', error);
     }
   };
+  const handleStatusChange = async (selected: IStatus | null) => {
+    if (selected) {
+      try {
+        const response = await updateTask({
+          tenantGuid,
+          dto: {
+            id: taskId,
+            ...taskFormData,
+            statusId: selected.id,
+          },
+        });
 
+        if ('error' in response) {
+          const errorData = response.error as { status: number; data: unknown };
+          throw new Error(errorData?.data?.toString() || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('Error updating status:', error);
+      }
+    }
+
+    setSelectedStatus(selected);
+  };
+
+  const handleExecutorChange = async (selected: IUser | null) => {
+    if (selected) {
+      try {
+        const response = await updateTask({
+          tenantGuid,
+          dto: {
+            id: taskId,
+            ...taskFormData,
+            executorId: selected.id,
+          },
+        });
+
+        if ('error' in response) {
+          const errorData = response.error as { status: number; data: unknown };
+          throw new Error(errorData?.data?.toString() || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('Error updating executor:', error);
+      }
+    }
+
+    setSelectedExecutor(selected);
+  };
 
   return (
     <div className="editTaskModalContent">
@@ -158,24 +234,21 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
             <input
               type="text"
               value={newComment}
+              className="editTaskForm__comment_field"
               onChange={handleNewCommentChange}
               placeholder="Введите новый комментарий"
             />
-            <button type="button" onClick={handleAddComment}>
-              Добавить комментарий
-            </button>
           </div>
-          <button type="submit" className="editTaskForm__submitButton" disabled={isLoading}>
+          <button type="submit" onClick={handleAddComment} className="taskList_button" disabled={isLoading}>
             {isLoading ? 'Сохранение...' : 'Сохранить'}
           </button>
           {taskFormData.lifetimeItems?.map((obj) => (
-            <div key={obj.id} className="editTaskForm__container">
-              <div className="editTaskForm__statusCircle editTaskForm__statusCircle-large"
-                   style={{backgroundColor: '#f5f5f5', width: 20}}/>
-              <div>
+            <div key={obj.id} className="editTaskForm__outer_container">
+              <div className="editTaskForm__statusCircle-large"/>
+              <div className="editTaskForm__comment_container">
                 <h3 className="editTaskForm__commentTitle">{obj.userName}</h3>
-                <h4>{obj.createdAt}</h4>
-                <p>{obj.comment}</p>
+                <p className="editTaskForm__date">{obj.createdAt ? formatDateCommentString(obj.createdAt) : 'Неверная дата'}</p>
+                <p className="editTaskForm__comment_field">{obj.comment}</p>
               </div>
             </div>
           ))}
@@ -185,8 +258,14 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
             <label className="editTaskForm__label">Статус</label>
             <div className="editTaskForm__statusContainer">
               <div className="editTaskForm__statusCircle"
-                   style={{ backgroundColor: getStatusColor(taskFormData.statusName, statuses) }}/>
-              <p>{taskFormData.statusName}</p>
+                   style={{backgroundColor: getStatusColor(taskFormData.statusName, statuses)}}/>
+              <Select
+                value={selectedStatus}
+                onChange={(selected: IStatus | null) => handleStatusChange(selected)}
+                options={statuses}
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.name}
+              />
             </div>
           </div>
           <div className="editTaskForm__container">
@@ -195,7 +274,17 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses}) 
           </div>
           <div className="editTaskForm__container">
             <label className="editTaskForm__label">Создана</label>
-            <p>{taskFormData.executorName}</p>
+            <p>{taskFormData.initiatorName}</p>
+          </div>
+          <div className="editTaskForm__container">
+            <label className="editTaskForm__label">Исполнитель</label>
+            <Select
+              value={selectedExecutor}
+              onChange={(selected: IUser | null) => handleExecutorChange(selected)}
+              options={users}
+              getOptionLabel={(user) => user.name}
+              getOptionValue={(user) => user.id.toString()}
+            />
           </div>
           <div className="editTaskForm__container">
             <label className="editTaskForm__label">Приоритет</label>

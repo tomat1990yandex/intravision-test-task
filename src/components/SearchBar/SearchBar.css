@@ -3,6 +3,7 @@
     width: 100%;
     background-color: #d1e0ed;
     height: 65px;
+    position: fixed;
 }
 
 .search_field {
