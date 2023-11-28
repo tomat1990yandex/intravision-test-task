@@ -35,6 +35,12 @@ export interface IUser {
   name: string;
 }
 
+interface ITitleData {
+  name: string;
+  style?: React.CSSProperties;
+  styleChildren?: React.CSSProperties;
+}
+
 export const getStatusColor = (status: string, statuses: IStatus[]): string => {
   const statusObject = statuses.find((s) => s.name.toLowerCase() === status.toLowerCase());
   return statusObject ? statusObject.rgb : '';
@@ -76,6 +82,23 @@ const TaskList: React.FC = () => {
   const statuses: IStatus[] = statusData || [];
   const priorities: IPriority[] = priorityData || [];
   const users: IUser[] = userData || [];
+  const titleData: ITitleData[] = [
+    {name: 'ID', style: {width: 116, paddingRight: 15}},
+    {name: 'Название', style: {width: 419, textAlign: "left"}},
+    {name: 'Статус', style: {width: 125, textAlign: "left"}},
+    {name: 'Исполнитель', style: { textAlign: "left"}, styleChildren: {paddingLeft: 30}},
+  ]
+
+  const renderTitleData = (titleDataObj: ITitleData) => (
+    <th className="taskList__table_title_container" style={titleDataObj.style}>
+      <p className="taskList__table_title" style={titleDataObj.styleChildren}>{titleDataObj.name}</p>
+    </th>
+  )
+
+  const formatId = (id: number): string => {
+    const idString = id.toString();
+    return idString.replace(/(\d{2})(\d+)/, '$1 $2');
+  };
 
   return (
     <div className="taskList_container">
@@ -93,11 +116,7 @@ const TaskList: React.FC = () => {
       <table className="taskList_table">
         <thead>
         <tr>
-          <th>ID</th>
-          <th>Название</th>
-          <th>Статус</th>
-          <th>Исполнитель</th>
-          <th>Приоритет</th>
+          {titleData.map(renderTitleData)}
         </tr>
         </thead>
         <tbody>
@@ -112,10 +131,14 @@ const TaskList: React.FC = () => {
                 style={{borderLeftColor: getPriorityColor(task.priorityName, priorities)}}
                 className={`taskList_priority-bar`}
               >
-                {task.id}
+                {formatId(task.id)}
               </p>
             </td>
-            <td className="taskList_name">{task.name}</td>
+            <td>
+              <p className="taskList_name">
+                {task.name}
+              </p>
+            </td>
             <td>
               <p
                 style={{backgroundColor: getStatusColor(task.statusName, statuses)}}
@@ -124,8 +147,11 @@ const TaskList: React.FC = () => {
                 {task.statusName.toLowerCase()}
               </p>
             </td>
-            <td className="taskList_executor">{task.executorName}</td>
-            <td>{task.priorityName}</td>
+            <td>
+              <p className="taskList_executor">
+                {task.executorName}
+              </p>
+            </td>
           </tr>
         ))}
         </tbody>
@@ -141,12 +167,16 @@ const TaskList: React.FC = () => {
       {selectedTask && (
         <EditTaskForm
           taskId={selectedTask.id}
-          onClose={() => setSelectedTask(null)}
+          onClose={() => {
+            toggleCreateTaskForm(false)
+            setSelectedTask(null)
+          }}
           statuses={statuses}
           users={users}/>
       )}
     </div>
-  );
+  )
+    ;
 };
 
 export default TaskList;

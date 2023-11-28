@@ -1,9 +1,12 @@
 .searchBar {
+    position: sticky;
+    top: 0;
+    left: 0;
     display: flex;
     width: 100%;
     background-color: #d1e0ed;
     height: 65px;
-    position: fixed;
+    z-index: 1;
 }
 
 .search_field {

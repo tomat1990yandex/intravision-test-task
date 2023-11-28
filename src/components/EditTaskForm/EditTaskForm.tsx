@@ -54,6 +54,9 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
   const [newComment, setNewComment] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<IStatus | null>(null);
   const [selectedExecutor, setSelectedExecutor] = useState<IUser | null>(null);
+  const [isStatusEditMode, setStatusEditMode] = useState(false);
+  const [isExecutorEditMode, setExecutorEditMode] = useState(false);
+
 
   useEffect(() => {
     if (taskData) {
@@ -61,7 +64,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
         name: taskData.name,
         description: taskData.description,
         price: taskData.price,
-        statusName: taskData.name,
+        statusName: taskData.statusName,
         initiatorName: taskData.initiatorName,
         executorName: taskData.executorName,
         priorityName: taskData.priorityName,
@@ -93,7 +96,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
         year: 'numeric',
       };
       const formatter = new Intl.DateTimeFormat('ru-RU', options);
-      return `${formatter.format(date)} г.`;
+      return `${formatter.format(date)}г.`;
     } catch (error) {
       console.error('Error formatting date:', error);
       return 'Invalid date';
@@ -124,27 +127,6 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
     setNewComment(e.target.value);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      const response = await updateTask({
-        tenantGuid,
-        dto: {
-          id: taskId,
-          ...taskFormData,
-        },
-      });
-
-      if ('error' in response) {
-        const errorData = response.error as { status: number; data: unknown };
-        throw new Error(errorData?.data?.toString() || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error updating task:', error);
-    }
-  };
-
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -153,7 +135,8 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
         tenantGuid,
         dto: {
           id: taskId,
-          ...taskFormData,
+          statusId: taskFormData.statusId,
+          executorId: taskFormData.executorId,
           comment: newComment,
         },
       });
@@ -175,7 +158,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
           tenantGuid,
           dto: {
             id: taskId,
-            ...taskFormData,
+            executorId: taskFormData.executorId,
             statusId: selected.id,
           },
         });
@@ -190,6 +173,30 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
     }
 
     setSelectedStatus(selected);
+    setStatusEditMode(false);
+  };
+
+  const renderStatusField = () => {
+    if (isStatusEditMode) {
+      return (
+        <Select
+          value={selectedStatus}
+          onChange={(selected: IStatus | null) => handleStatusChange(selected)}
+          options={statuses}
+          getOptionLabel={(option) => option.name}
+          getOptionValue={(option) => option.name}
+          onBlur={() => setStatusEditMode(false)}
+        />
+      );
+    } else {
+      return (
+        <div className="editTaskForm__statusContainer editTaskForm__statusContainer_active">
+          <div className="editTaskForm__statusCircle"
+               style={{backgroundColor: getStatusColor(taskFormData.statusName, statuses)}}/>
+          <p onClick={() => setStatusEditMode(true)}>{taskFormData.statusName}</p>
+        </div>
+      );
+    }
   };
 
   const handleExecutorChange = async (selected: IUser | null) => {
@@ -199,7 +206,6 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
           tenantGuid,
           dto: {
             id: taskId,
-            ...taskFormData,
             executorId: selected.id,
           },
         });
@@ -214,6 +220,28 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
     }
 
     setSelectedExecutor(selected);
+    setExecutorEditMode(false);
+  };
+
+  const renderExecutorField = () => {
+    if (isExecutorEditMode) {
+      return (
+        <Select
+          value={selectedExecutor}
+          onChange={(selected: IUser | null) => handleExecutorChange(selected)}
+          options={users}
+          getOptionLabel={(user) => user.name}
+          getOptionValue={(user) => user.id.toString()}
+          onBlur={() => setExecutorEditMode(false)}
+        />
+      );
+    } else {
+      return (
+        <div className="editTaskForm__statusContainer editTaskForm__statusContainer_active">
+          <p onClick={() => setExecutorEditMode(true)}>{taskFormData.executorName}</p>
+        </div>
+      );
+    }
   };
 
   return (
@@ -223,23 +251,29 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
         description={taskFormData.name}
         onClose={onClose}
       />
-      <form onSubmit={handleSubmit} className="editTaskForm">
+      <form className="editTaskForm">
         <section className="editTaskForm__left">
-          <div className="editTaskForm__container">
-            <label className="editTaskForm__label">Описание</label>
-            <p>{taskFormData.description}</p>
-          </div>
-          <div className="editTaskForm__container">
-            <label className="editTaskForm__label">Новый комментарий</label>
-            <input
-              type="text"
-              value={newComment}
-              className="editTaskForm__comment_field"
-              onChange={handleNewCommentChange}
-              placeholder="Введите новый комментарий"
-            />
-          </div>
-          <button type="submit" onClick={handleAddComment} className="taskList_button" disabled={isLoading}>
+          <div className="editTaskForm__main_container">
+            <div className="editTaskForm__container">
+              <label className="editTaskForm__label">Описание</label>
+              <p className="editTaskForm_description">{taskFormData.description}</p>
+            </div>
+            <div className="editTaskForm__container">
+              <label className="editTaskForm__label">Добавление комментариев</label>
+              <input
+                type="text"
+                value={newComment}
+                className="editTaskForm__comment_field"
+                onChange={handleNewCommentChange}
+                placeholder="Введите новый комментарий"
+              />
+            </div>
+           </div>
+          <button
+            onClick={handleAddComment}
+            className="taskList_button"
+            style={{padding: '9px 36px', marginLeft: 4}}
+            disabled={isLoading}>
             {isLoading ? 'Сохранение...' : 'Сохранить'}
           </button>
           {taskFormData.lifetimeItems?.map((obj) => (
@@ -247,61 +281,61 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
               <div className="editTaskForm__statusCircle-large"/>
               <div className="editTaskForm__comment_container">
                 <h3 className="editTaskForm__commentTitle">{obj.userName}</h3>
-                <p className="editTaskForm__date">{obj.createdAt ? formatDateCommentString(obj.createdAt) : 'Неверная дата'}</p>
-                <p className="editTaskForm__comment_field">{obj.comment}</p>
+                <p
+                  className="editTaskForm__date">{obj.createdAt ? formatDateCommentString(obj.createdAt) : 'Неверная дата'}
+                </p>
+                <p
+                  className="editTaskForm__comment_field"
+                  style={{padding: '8px 10px', marginTop: 6}}
+                >{obj.comment}
+                </p>
               </div>
             </div>
           ))}
         </section>
         <section className="editTaskForm__right">
           <div className="editTaskForm__container">
-            <label className="editTaskForm__label">Статус</label>
-            <div className="editTaskForm__statusContainer">
-              <div className="editTaskForm__statusCircle"
-                   style={{backgroundColor: getStatusColor(taskFormData.statusName, statuses)}}/>
-              <Select
-                value={selectedStatus}
-                onChange={(selected: IStatus | null) => handleStatusChange(selected)}
-                options={statuses}
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option.name}
-              />
-            </div>
+            {renderStatusField()}
           </div>
-          <div className="editTaskForm__container">
+          <div
+            className="editTaskForm__container"
+            style={{marginTop: 9}}
+          >
             <label className="editTaskForm__label">Заявитель</label>
             <p>{taskFormData.initiatorName}</p>
           </div>
-          <div className="editTaskForm__container">
+          <div
+            className="editTaskForm__container"
+            style={{marginTop: 21}}
+          >
             <label className="editTaskForm__label">Создана</label>
             <p>{taskFormData.initiatorName}</p>
           </div>
           <div className="editTaskForm__container">
             <label className="editTaskForm__label">Исполнитель</label>
-            <Select
-              value={selectedExecutor}
-              onChange={(selected: IUser | null) => handleExecutorChange(selected)}
-              options={users}
-              getOptionLabel={(user) => user.name}
-              getOptionValue={(user) => user.id.toString()}
-            />
+            {renderExecutorField()}
           </div>
           <div className="editTaskForm__container">
             <label className="editTaskForm__label">Приоритет</label>
             <p>{taskFormData.priorityName}</p>
           </div>
-          <div className="editTaskForm__container">
+          <div
+            className="editTaskForm__container"
+            style={{gap: 13}}
+          >
             <label className="editTaskForm__label">Срок</label>
             <div className="editTaskForm__statusContainer">
               <img src={calendarIcon} alt="calendarIcon"/>
-              <p>{formatDateString(taskFormData.resolutionDatePlan)}</p>
+              <p>{taskFormData.resolutionDatePlan ? formatDateString(taskFormData.resolutionDatePlan) : 'дата не указана'}</p>
             </div>
           </div>
           <div className="editTaskForm__container">
             <label className="editTaskForm__label">Теги</label>
-            {taskFormData.tags.map((tag: { id: number; name: string }) => (
-              <p key={tag.id}>{tag.name}</p>
-            ))}
+            <div className="editTaskForm__tags_container">
+              {taskFormData.tags.map((tag: { id: number; name: string }) => (
+                <p className="editTaskForm__tags" key={tag.id}>{tag.name}</p>
+              ))}
+            </div>
           </div>
         </section>
       </form>

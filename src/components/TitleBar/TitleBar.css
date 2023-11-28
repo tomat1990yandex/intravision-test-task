@@ -5,16 +5,35 @@
     height: 60px;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 30px;
+    padding: 20px 28px;
     color: #FFFFFF;
+    text-align: left;
 }
 
 .titleBar_title {
-    font-family: Myriad Pro, serif;
+    font-family: "Myriad Pro", serif;
     font-size: 18px;
+    font-weight: normal;
+    margin-left: 8px;
 }
 
 
 .titleBar_close {
     background-color: #1a4876;
+}
+
+.titleBar_description {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1.1em;
+    max-width: 560px;
+    max-height: 38px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.titleBar__text_container {
+    display: flex;
+    align-items: center;
+    gap: 25px;
 }

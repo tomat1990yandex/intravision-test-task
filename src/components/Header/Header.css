@@ -2,13 +2,18 @@
     background-color: #002137;
     display: flex;
     flex-direction: column;
-    width: 109px;
+    width: 101px;
     height: 850px;
     align-items: center;
 }
 
 .menu_container {
-    padding: 15px 0;
+    display: flex;
+    width: 100%;
+    height: 70px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .menu_logo {
@@ -16,12 +21,8 @@
     margin-left: 9px;
 }
 
-.menu_icons {
-
-}
-
 .menu_labels {
     color: #FFF;
-    font-family: "Roboto Light", serif;
+    font-family: "Roboto Light", sans-serif;
     font-size: 12px;
 }

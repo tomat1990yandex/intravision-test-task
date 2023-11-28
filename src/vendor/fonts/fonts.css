@@ -1,0 +1,17 @@
+@font-face {
+    font-family: 'Myriad Pro';
+    src: url(./MyriadPro-Regular.woff) format('woff');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Ubuntu Light';
+    src: url(./Ubuntu-Light.woff) format('woff');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'CorporateACyr';
+    src: url(./CorporateA-Regular.woff) format('woff');
+    font-weight: normal;
+}

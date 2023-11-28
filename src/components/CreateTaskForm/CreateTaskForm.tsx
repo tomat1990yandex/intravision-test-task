@@ -40,14 +40,14 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClos
 
 
   return (
-    <div className="createTaskModalContent">
+    <div className="editTaskModalContent">
       <TitleBar title={'Новая заявка'} description={''} onClose={onClose}/>
       <form onSubmit={handleSubmit} className="taskList_form">
         <div className="taskList_form_container">
           <label className="taskList_form_label">Название</label>
           <textarea
             className="taskList_form_textarea"
-            rows={6}
+            rows={5}
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
           />
@@ -61,9 +61,11 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClos
             onChange={(e) => setTaskDescription(e.target.value)}
           />
         </div>
-        <button type="submit" className="taskList_button" disabled={isLoading}>
-          {isLoading ? 'Сохранение...' : 'Сохранить'}
-        </button>
+        <div className="taskList__form_button_container">
+          <button className="taskList_button" disabled={isLoading}>
+            {isLoading ? 'Сохранение...' : 'Сохранить'}
+          </button>
+        </div>
       </form>
     </div>
   );
