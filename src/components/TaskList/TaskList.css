@@ -1,4 +1,4 @@
-.taskList_button {
+.taskList-button {
     background-color: #3796f8;
     color: #FFFFFF;
     border-radius: 20px;
@@ -8,26 +8,24 @@
     cursor: pointer;
 }
 
-.taskList_table {
+.taskList-table {
     border-collapse: collapse;
     font-family: "Roboto Light", sans-serif;
     font-size: 16px;
     width: 100%;
 }
 
-.taskList_table th {
+.taskList-table th {
     font-family: "Ubuntu Light", sans-serif;
     border-bottom: 1px solid #ddd;
-
 }
 
-.taskList_table td {
+.taskList-table td {
     border-bottom: 1px solid #ddd;
     padding: 3px;
 }
 
-
-.taskList_status {
+.taskList-status {
     color: #FFFFFF;
     text-align: left;
     border-radius: 20px;
@@ -37,13 +35,13 @@
     margin-left: 12px;
 }
 
-.taskList_priority-bar {
+.taskList-priority-bar {
     border-left-width: 5px;
     border-left-style: solid;
     padding: 15px 15px 15px 40px;
 }
 
-.taskList_container {
+.taskList-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -51,29 +49,29 @@
     overflow-y: scroll;
 }
 
-.taskList_button_container {
+.taskList-button-container {
     padding: 25px 0 14px 262px;
 }
 
-.taskList__table_title {
+.taskList__table-title {
     border-left: 1px solid #e2e7ea;
     padding-left: 15px;
 }
 
-.taskList__table_title_container {
+.taskList__table-title-container {
     padding: 10px 0 14px;
 }
 
-.taskList_id {
+.taskList-id {
     text-align: center;
 }
 
-.taskList_executor {
+.taskList-executor {
     text-align: left;
     padding-left: 30px;
 }
 
-.taskList_name {
+.taskList-name {
     text-align: left;
     max-height: 32px;
     overflow: hidden;

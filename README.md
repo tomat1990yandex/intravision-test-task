@@ -1,46 +1,55 @@
-# Getting Started with Create React App
+# IntraVision Тестовое Задание - Front-End Разработчик (React)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Данный проект представляет собой SPA (Single Page Application) для управления списком заявок с использованием React.
 
-## Available Scripts
+## Запуск проекта
 
-In the project directory, you can run:
+1. Клонировать репозиторий:
 
-### `npm start`
+    ```bash
+    git clone https://github.com/tomat1990yandex/intravision-test-project.git
+    ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+2. Перейти в каталог проекта:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+    ```bash
+    cd intravision-test-project
+    ```
 
-### `npm test`
+3. Установить зависимости:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    ```bash
+    npm install
+    ```
 
-### `npm run build`
+4. Запустить проект:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    ```bash
+    npm start
+    ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Проект будет доступен по адресу [http://localhost:3000](http://localhost:3000) в вашем браузере.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Основные функциональности
 
-### `npm run eject`
+1. **Список заявок:**
+    - Выводит список заявок с возможностью прокрутки.
+    - Клик по заявке открывает карточку заявки для редактирования.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. **Создание заявки:**
+    - Кнопка "Создать заявку" открывает форму для добавления новой заявки.
+    - Заполните поля "Название" и "Описание", затем нажмите "Сохранить".
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **Редактирование заявки:**
+    - При клике на заявку в списке открывается карточка для редактирования.
+    - Добавление комментария, изменение статуса и исполнителя.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+4. **Меню разделов:**
+    - Иконки меню "База знаний", "Пользователи", "Активы", "Настройки" открывают соответствующие разделы.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+5. **Поиск по базе знаний:**
+    - Поле для ввода, в данный момент без функциональности.
 
-## Learn More
+## Взаимодействие с сервером
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Весь трафик с сервером обрабатывается через API: [http://intravision-task.test01.intravision.ru/swagger/index.html](http://intravision-task.test01.intravision.ru/swagger/index.html).

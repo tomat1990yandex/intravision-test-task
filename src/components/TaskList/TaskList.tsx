@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './TaskList.css';
 import {
   tenantGuid,
@@ -46,23 +46,22 @@ export const getStatusColor = (status: string, statuses: IStatus[]): string => {
   return statusObject ? statusObject.rgb : '';
 };
 
-
 export const getPriorityColor = (priority: string, priorities: IPriority[]): string => {
   const priorityObject = priorities.find((p) => p.name.toLowerCase() === priority.toLowerCase());
   return priorityObject ? priorityObject.rgb : '';
 };
 
 const TaskList: React.FC = () => {
-  const {data: taskData, error: taskError, isLoading: taskIsLoading} = useGetTasksQuery({tenantGuid});
-  const {data: statusData, error: statusError, isLoading: statusIsLoading} = useGetStatusesQuery(tenantGuid);
-  const {data: priorityData, error: priorityError, isLoading: priorityIsLoading} = useGetPrioritiesQuery(tenantGuid);
-  const {data: userData, error: userError, isLoading: userIsLoading} = useGetUsersQuery(tenantGuid);
+  const { data: taskData, error: taskError, isLoading: taskIsLoading } = useGetTasksQuery({ tenantGuid });
+  const { data: statusData, error: statusError, isLoading: statusIsLoading } = useGetStatusesQuery(tenantGuid);
+  const { data: priorityData, error: priorityError, isLoading: priorityIsLoading } = useGetPrioritiesQuery(tenantGuid);
+  const { data: userData, error: userError, isLoading: userIsLoading } = useGetUsersQuery(tenantGuid);
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isCreateTaskForm, toggleCreateTaskForm] = useState(false);
 
   const handleCreateTask = (taskId: number) => {
+    console.log(taskId)
     toggleCreateTaskForm(false);
-    // setSelectedTask({id: taskId, name: 'New Task', statusName: 'Открыта', executorName: '', priorityName: ''});
     setSelectedTask(taskData.find((task: ITask) => task.id === taskId));
   }
 
@@ -71,11 +70,11 @@ const TaskList: React.FC = () => {
   };
 
   if (taskIsLoading || statusIsLoading || priorityIsLoading || userIsLoading) {
-    return <div>Loading...</div>;
+    return <h1>Loading...</h1>;
   }
 
   if (taskError || statusError || priorityError || userError) {
-    return <div>Error loading</div>;
+    return <h1>Error loading</h1>;
   }
 
   const tasks: ITask[] | undefined = taskData?.value;
@@ -83,17 +82,17 @@ const TaskList: React.FC = () => {
   const priorities: IPriority[] = priorityData || [];
   const users: IUser[] = userData || [];
   const titleData: ITitleData[] = [
-    {name: 'ID', style: {width: 116, paddingRight: 15}},
-    {name: 'Название', style: {width: 419, textAlign: "left"}},
-    {name: 'Статус', style: {width: 125, textAlign: "left"}},
-    {name: 'Исполнитель', style: { textAlign: "left"}, styleChildren: {paddingLeft: 30}},
-  ]
+    { name: 'ID', style: { width: 116, paddingRight: 15 } },
+    { name: 'Название', style: { width: 419, textAlign: "left" } },
+    { name: 'Статус', style: { width: 125, textAlign: "left" } },
+    { name: 'Исполнитель', style: { textAlign: "left" }, styleChildren: { paddingLeft: 30 } },
+  ];
 
   const renderTitleData = (titleDataObj: ITitleData) => (
-    <th className="taskList__table_title_container" style={titleDataObj.style}>
-      <p className="taskList__table_title" style={titleDataObj.styleChildren}>{titleDataObj.name}</p>
+    <th key={titleDataObj.name} className="taskList__table-title-container" style={titleDataObj.style}>
+      <p className="taskList__table-title" style={titleDataObj.styleChildren}>{titleDataObj.name}</p>
     </th>
-  )
+  );
 
   const formatId = (id: number): string => {
     const idString = id.toString();
@@ -101,10 +100,10 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div className="taskList_container">
-      <div className="taskList_button_container">
+    <div className="taskList-container">
+      <div className="taskList-button-container">
         <button
-          className="taskList_button"
+          className="taskList-button"
           onClick={() => {
             toggleCreateTaskForm(true)
             setSelectedTask(null)
@@ -113,7 +112,7 @@ const TaskList: React.FC = () => {
           Создать заявку
         </button>
       </div>
-      <table className="taskList_table">
+      <table className="taskList-table">
         <thead>
         <tr>
           {titleData.map(renderTitleData)}
@@ -124,31 +123,31 @@ const TaskList: React.FC = () => {
           <tr
             key={task.id}
             onClick={() => handleEditTask(task)}
-            className="taskList_row"
+            className="taskList-row"
           >
-            <td className="taskList_id">
+            <td className="taskList-id">
               <p
-                style={{borderLeftColor: getPriorityColor(task.priorityName, priorities)}}
-                className={`taskList_priority-bar`}
+                style={{ borderLeftColor: getPriorityColor(task.priorityName, priorities) }}
+                className={`taskList-priority-bar`}
               >
                 {formatId(task.id)}
               </p>
             </td>
             <td>
-              <p className="taskList_name">
+              <p className="taskList-name">
                 {task.name}
               </p>
             </td>
             <td>
               <p
-                style={{backgroundColor: getStatusColor(task.statusName, statuses)}}
-                className={`taskList_status`}
+                style={{ backgroundColor: getStatusColor(task.statusName, statuses) }}
+                className={`taskList-status`}
               >
                 {task.statusName.toLowerCase()}
               </p>
             </td>
             <td>
-              <p className="taskList_executor">
+              <p className="taskList-executor">
                 {task.executorName}
               </p>
             </td>
@@ -172,11 +171,10 @@ const TaskList: React.FC = () => {
             setSelectedTask(null)
           }}
           statuses={statuses}
-          users={users}/>
+          users={users} />
       )}
     </div>
-  )
-    ;
+  );
 };
 
 export default TaskList;

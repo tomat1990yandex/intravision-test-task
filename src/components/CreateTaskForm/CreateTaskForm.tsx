@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './CreateTaskForm.css'
-import {tenantGuid, useCreateTaskMutation} from '../../services/api';
+import { tenantGuid, useCreateTaskMutation } from '../../services/api';
 import TitleBar from "../TitleBar/TitleBar";
 
 interface CreateTaskFormProps {
@@ -8,10 +8,10 @@ interface CreateTaskFormProps {
   handleCreateTask: (taskId: number) => void;
 }
 
-const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClose}) => {
+const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ handleCreateTask, onClose }) => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
-  const [createTask, {isLoading}] = useCreateTaskMutation();
+  const [createTask, { isLoading }] = useCreateTaskMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,32 +37,30 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClos
     }
   };
 
-
-
   return (
     <div className="editTaskModalContent">
-      <TitleBar title={'Новая заявка'} description={''} onClose={onClose}/>
-      <form onSubmit={handleSubmit} className="taskList_form">
-        <div className="taskList_form_container">
-          <label className="taskList_form_label">Название</label>
+      <TitleBar title={'Новая заявка'} description={''} onClose={onClose} />
+      <form onSubmit={handleSubmit} className="createTaskForm">
+        <div className="createTaskForm-container">
+          <label className="createTaskForm-label">Название</label>
           <textarea
-            className="taskList_form_textarea"
+            className="createTaskForm-textarea"
             rows={5}
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
           />
         </div>
-        <div className="taskList_form_container">
-          <label className="taskList_form_label">Описание</label>
+        <div className="createTaskForm-container">
+          <label className="createTaskForm-label">Описание</label>
           <textarea
-            className="taskList_form_textarea"
+            className="createTaskForm-textarea"
             rows={9}
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
           />
         </div>
-        <div className="taskList__form_button_container">
-          <button className="taskList_button" disabled={isLoading}>
+        <div className="createTaskForm-button-container">
+          <button className="taskList-button" disabled={isLoading}>
             {isLoading ? 'Сохранение...' : 'Сохранить'}
           </button>
         </div>

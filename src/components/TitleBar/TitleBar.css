@@ -1,4 +1,4 @@
-.titleBar_container {
+.titleBar-container {
     background-color: #1a4876;
     display: flex;
     width: 100%;
@@ -10,19 +10,18 @@
     text-align: left;
 }
 
-.titleBar_title {
+.titleBar-title {
     font-family: "Myriad Pro", serif;
     font-size: 18px;
     font-weight: normal;
     margin-left: 8px;
 }
 
-
-.titleBar_close {
+.titleBar-close {
     background-color: #1a4876;
 }
 
-.titleBar_description {
+.titleBar-description {
     font-size: 16px;
     font-weight: normal;
     line-height: 1.1em;
@@ -32,7 +31,7 @@
     text-overflow: ellipsis;
 }
 
-.titleBar__text_container {
+.titleBar-text-container {
     display: flex;
     align-items: center;
     gap: 25px;

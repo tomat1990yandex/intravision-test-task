@@ -1,9 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {
-  tenantGuid,
-  useGetTasksByIdQuery,
-  useUpdateTaskMutation
-} from '../../services/api';
+import React, {useEffect, useState} from 'react';
+import {tenantGuid, useGetTasksByIdQuery, useUpdateTaskMutation} from '../../services/api';
 import TitleBar from '../TitleBar/TitleBar';
 import calendarIcon from '../../images/calendarIcon.png';
 import './EditTaskForm.css';
@@ -28,7 +24,14 @@ interface TaskFormData {
   priorityName: string;
   resolutionDatePlan: string;
   tags: { id: number; name: string }[];
-  lifetimeItems: { createdAt: string; userName: string; comment: string; id: string }[];
+  lifetimeItems: {
+    createdAt: string;
+    userName: string;
+    comment: string;
+    id: string;
+    newFieldValue: string;
+    oldFieldValue: string;
+  }[];
   statusId: string;
   executorId: string;
 }
@@ -135,9 +138,9 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
         tenantGuid,
         dto: {
           id: taskId,
+          comment: newComment,
           statusId: taskFormData.statusId,
           executorId: taskFormData.executorId,
-          comment: newComment,
         },
       });
 
@@ -146,7 +149,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
         throw new Error(errorData?.data?.toString() || 'Unknown error');
       }
 
-      setNewComment(''); // Очистите поле ввода после успешного добавления комментария
+      setNewComment('');
     } catch (error) {
       console.error('Error adding comment:', error);
     }
@@ -206,6 +209,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
           tenantGuid,
           dto: {
             id: taskId,
+            statusId: taskFormData.statusId,
             executorId: selected.id,
           },
         });
@@ -268,10 +272,10 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
                 placeholder="Введите новый комментарий"
               />
             </div>
-           </div>
+          </div>
           <button
             onClick={handleAddComment}
-            className="taskList_button"
+            className="taskList-button"
             style={{padding: '9px 36px', marginLeft: 4}}
             disabled={isLoading}>
             {isLoading ? 'Сохранение...' : 'Сохранить'}
@@ -284,10 +288,14 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
                 <p
                   className="editTaskForm__date">{obj.createdAt ? formatDateCommentString(obj.createdAt) : 'Неверная дата'}
                 </p>
-                <p
-                  className="editTaskForm__comment_field"
-                  style={{padding: '8px 10px', marginTop: 6}}
-                >{obj.comment}
+                <p className="editTaskForm__comment_field" style={{padding: '8px 10px', marginTop: 6}}>
+                  {obj.comment}
+                  {obj.oldFieldValue && (
+                    <span style={{color: 'red'}}>{`Старое значение: ${obj.oldFieldValue} ->`}</span>
+                  )}
+                  {obj.newFieldValue && (
+                    <span style={{color: 'green'}}> Новое значение: {obj.newFieldValue}</span>
+                  )}
                 </p>
               </div>
             </div>
