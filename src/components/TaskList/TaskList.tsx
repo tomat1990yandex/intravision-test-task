@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './TaskList.css';
-import {
-  tenantGuid,
-  useGetPrioritiesQuery,
-  useGetStatusesQuery,
-  useGetTasksQuery,
-  useGetUsersQuery,
-} from '../../services/api';
 import CreateTaskForm from '../CreateTaskForm/CreateTaskForm';
 import EditTaskForm from '../EditTaskForm/EditTaskForm';
+
+interface ITaskListProps {
+  taskData?: { value: ITask[] };
+  statusData?: IStatus[] | null;
+  priorityData?: IPriority[] | null;
+  userData?: IUser[] | null;
+  taskIsLoading: boolean;
+  statusIsLoading: boolean;
+  priorityIsLoading: boolean;
+  userIsLoading: boolean;
+  taskError?: any;
+  statusError?: any;
+  priorityError?: any;
+  userError?: any;
+}
 
 export interface ITask {
   id: number;
@@ -51,23 +59,23 @@ export const getPriorityColor = (priority: string, priorities: IPriority[]): str
   return priorityObject ? priorityObject.rgb : '';
 };
 
-const TaskList: React.FC = () => {
-  const { data: taskData, error: taskError, isLoading: taskIsLoading } = useGetTasksQuery({ tenantGuid });
-  const { data: statusData, error: statusError, isLoading: statusIsLoading } = useGetStatusesQuery(tenantGuid);
-  const { data: priorityData, error: priorityError, isLoading: priorityIsLoading } = useGetPrioritiesQuery(tenantGuid);
-  const { data: userData, error: userError, isLoading: userIsLoading } = useGetUsersQuery(tenantGuid);
+const TaskList: React.FC<ITaskListProps> = ({
+                                              taskData,
+                                              statusData,
+                                              priorityData,
+                                              userData,
+                                              taskIsLoading,
+                                              statusIsLoading,
+                                              priorityIsLoading,
+                                              userIsLoading,
+                                              taskError,
+                                              statusError,
+                                              priorityError,
+                                              userError
+                                            }) => {
+
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isCreateTaskForm, toggleCreateTaskForm] = useState(false);
-
-  const handleCreateTask = (taskId: number) => {
-    console.log(taskId)
-    toggleCreateTaskForm(false);
-    setSelectedTask(taskData.find((task: ITask) => task.id === taskId));
-  }
-
-  const handleEditTask = (task: ITask) => {
-    setSelectedTask(task);
-  };
 
   if (taskIsLoading || statusIsLoading || priorityIsLoading || userIsLoading) {
     return <h1>Loading...</h1>;
@@ -76,16 +84,25 @@ const TaskList: React.FC = () => {
   if (taskError || statusError || priorityError || userError) {
     return <h1>Error loading</h1>;
   }
+    const handleCreateTask = (taskId: number) => {
+      toggleCreateTaskForm(false);
+      setSelectedTask(taskData?.value.find((task: ITask) => task.id === taskId) || null);
+    }
 
-  const tasks: ITask[] | undefined = taskData?.value;
+  const handleEditTask = (task: ITask) => {
+    setSelectedTask(task);
+  };
+
+
+  const tasks: ITask[] = taskData?.value || [];
   const statuses: IStatus[] = statusData || [];
   const priorities: IPriority[] = priorityData || [];
   const users: IUser[] = userData || [];
   const titleData: ITitleData[] = [
-    { name: 'ID', style: { width: 116, paddingRight: 15 } },
-    { name: 'Название', style: { width: 419, textAlign: "left" } },
-    { name: 'Статус', style: { width: 125, textAlign: "left" } },
-    { name: 'Исполнитель', style: { textAlign: "left" }, styleChildren: { paddingLeft: 30 } },
+    {name: 'ID', style: {width: 116, paddingRight: 15}},
+    {name: 'Название', style: {width: 419, textAlign: "left"}},
+    {name: 'Статус', style: {width: 125, textAlign: "left"}},
+    {name: 'Исполнитель', style: {textAlign: "left"}, styleChildren: {paddingLeft: 30}},
   ];
 
   const renderTitleData = (titleDataObj: ITitleData) => (
@@ -127,7 +144,7 @@ const TaskList: React.FC = () => {
           >
             <td className="taskList-id">
               <p
-                style={{ borderLeftColor: getPriorityColor(task.priorityName, priorities) }}
+                style={{borderLeftColor: getPriorityColor(task.priorityName, priorities)}}
                 className={`taskList-priority-bar`}
               >
                 {formatId(task.id)}
@@ -140,7 +157,7 @@ const TaskList: React.FC = () => {
             </td>
             <td>
               <p
-                style={{ backgroundColor: getStatusColor(task.statusName, statuses) }}
+                style={{backgroundColor: getStatusColor(task.statusName, statuses)}}
                 className={`taskList-status`}
               >
                 {task.statusName.toLowerCase()}
@@ -171,7 +188,7 @@ const TaskList: React.FC = () => {
             setSelectedTask(null)
           }}
           statuses={statuses}
-          users={users} />
+          users={users}/>
       )}
     </div>
   );

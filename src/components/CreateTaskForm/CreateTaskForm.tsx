@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './CreateTaskForm.css'
-import { tenantGuid, useCreateTaskMutation } from '../../services/api';
+import {tenantGuid, useCreateTaskMutation} from '../../services/api';
 import TitleBar from "../TitleBar/TitleBar";
 
 interface CreateTaskFormProps {
@@ -8,10 +8,10 @@ interface CreateTaskFormProps {
   handleCreateTask: (taskId: number) => void;
 }
 
-const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ handleCreateTask, onClose }) => {
+const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClose}) => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
-  const [createTask, { isLoading }] = useCreateTaskMutation();
+  const [createTask, {isLoading}] = useCreateTaskMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +19,11 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ handleCreateTask, onClo
     try {
       const response = await createTask({
         tenantGuid,
-        dto: { name: taskName, description: taskDescription },
+        dto: {
+          name: taskName,
+          description: taskDescription,
+          statusId: 14177
+        },
       });
 
       if ('data' in response) {
@@ -39,7 +43,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ handleCreateTask, onClo
 
   return (
     <div className="editTaskModalContent">
-      <TitleBar title={'Новая заявка'} description={''} onClose={onClose} />
+      <TitleBar title={'Новая заявка'} description={''} onClose={onClose}/>
       <form onSubmit={handleSubmit} className="createTaskForm">
         <div className="createTaskForm-container">
           <label className="createTaskForm-label">Название</label>
