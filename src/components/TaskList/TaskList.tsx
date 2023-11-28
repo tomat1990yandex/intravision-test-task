@@ -86,7 +86,7 @@ const TaskList: React.FC<ITaskListProps> = ({
   }
     const handleCreateTask = (taskId: number) => {
       toggleCreateTaskForm(false);
-      setSelectedTask(taskData?.value.find((task: ITask) => task.id === taskId) || null);
+      setSelectedTask((prevTask) => ({ ...prevTask, id: taskId } as ITask));
     }
 
   const handleEditTask = (task: ITask) => {
