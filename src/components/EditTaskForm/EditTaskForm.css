@@ -132,6 +132,7 @@
 
 .editTaskForm_description {
     text-align: left;
+    white-space: pre-line
 }
 
 .editTaskForm__tags {
@@ -177,4 +178,16 @@
 
 .editTaskForm__comment_add-field::placeholder {
     color: #9f9ea7;
+}
+
+.editTaskForm__error-message {
+    position: absolute;
+    color: red;
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+.editTaskForm__comment_add-field.error {
+    border: 1px solid red;
+    border-radius: 5px;
 }

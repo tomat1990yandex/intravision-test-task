@@ -16,6 +16,11 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClos
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!taskName) {
+      console.error('Task name is required');
+      return;
+    }
+
     try {
       const response = await createTask({
         tenantGuid,
@@ -40,10 +45,16 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClos
       console.error('Error creating task:', error);
     }
   };
+  const handleTaskNameChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTaskName(e.target.value);
+  };
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTaskDescription(e.target.value);
+  };
 
   return (
     <div className="editTaskModalContent">
-      <TitleBar title={'Новая заявка'} description={''} onClose={onClose}/>
+      <TitleBar title={'Новая заявка'} description={''} onClose={onClose} />
       <form onSubmit={handleSubmit} className="createTaskForm">
         <div className="createTaskForm-container">
           <label className="createTaskForm-label">Название</label>
@@ -51,7 +62,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClos
             className="createTaskForm-textarea"
             rows={5}
             value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
+            onChange={handleTaskNameChange}
           />
         </div>
         <div className="createTaskForm-container">
@@ -60,7 +71,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({handleCreateTask, onClos
             className="createTaskForm-textarea"
             rows={9}
             value={taskDescription}
-            onChange={(e) => setTaskDescription(e.target.value)}
+            onChange={handleDescriptionChange}
           />
         </div>
         <div className="createTaskForm-button-container">

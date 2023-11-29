@@ -59,6 +59,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
   const [selectedExecutor, setSelectedExecutor] = useState<IUser | null>(null);
   const [isStatusEditMode, setStatusEditMode] = useState(false);
   const [isExecutorEditMode, setExecutorEditMode] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -133,6 +134,11 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!newComment.trim()) {
+      setCommentError('Комментарий не может быть пустым.');
+      return;
+    }
+
     try {
       const response = await updateTask({
         tenantGuid,
@@ -150,6 +156,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
       }
 
       setNewComment('');
+      setCommentError(null);
     } catch (error) {
       console.error('Error adding comment:', error);
     }
@@ -263,10 +270,11 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
               <p className="editTaskForm_description">{taskFormData.description}</p>
             </div>
             <div className="editTaskForm__container">
+              {commentError && <p className="editTaskForm__error-message">{commentError}</p>}
               <input
                 type="text"
                 value={newComment}
-                className="editTaskForm__comment_add-field"
+                className={`editTaskForm__comment_add-field ${commentError ? 'error' : ''}`}
                 onChange={handleNewCommentChange}
                 placeholder="Добавление комментариев"
               />
