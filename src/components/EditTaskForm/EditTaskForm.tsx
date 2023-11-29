@@ -263,20 +263,19 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
               <p className="editTaskForm_description">{taskFormData.description}</p>
             </div>
             <div className="editTaskForm__container">
-              <label className="editTaskForm__label">Добавление комментариев</label>
               <input
                 type="text"
                 value={newComment}
-                className="editTaskForm__comment_field"
+                className="editTaskForm__comment_add-field"
                 onChange={handleNewCommentChange}
-                placeholder="Введите новый комментарий"
+                placeholder="Добавление комментариев"
               />
             </div>
           </div>
           <button
             onClick={handleAddComment}
             className="taskList-button"
-            style={{padding: '9px 36px', marginLeft: 4}}
+            style={{padding: '9px 36px', marginLeft: 4, marginTop: 38}}
             disabled={isLoading}>
             {isLoading ? 'Сохранение...' : 'Сохранить'}
           </button>
@@ -288,7 +287,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({taskId, onClose, statuses, u
                 <p
                   className="editTaskForm__date">{obj.createdAt ? formatDateCommentString(obj.createdAt) : 'Неверная дата'}
                 </p>
-                <p className="editTaskForm__comment_field" style={{padding: '8px 10px', marginTop: 6}}>
+                <p className="editTaskForm__comment_field" style={{padding: '8px 30px 15px 10px', marginTop: 6}}>
                   {obj.comment}
                   {obj.oldFieldValue && (
                     <span style={{color: 'red'}}>{`Старое значение: ${obj.oldFieldValue} ->`}</span>
