@@ -159,6 +159,7 @@ const TaskList: React.FC<ITaskListProps> = ({
               <p
                 style={{backgroundColor: getStatusColor(task.statusName, statuses)}}
                 className={`taskList-status`}
+                title={task.statusName.toLowerCase()}
               >
                 {task.statusName.toLowerCase()}
               </p>
